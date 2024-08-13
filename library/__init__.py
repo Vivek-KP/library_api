@@ -17,9 +17,12 @@ def create_app():
 
     from library.controller.memberController.membersController import members_bp
     from library.controller.bookController.booksController import books_bp
+    from library.controller.dashbordeController.DashboardController import dashboard_bp
 
     app.register_blueprint(members_bp)
     app.register_blueprint(books_bp)
+    app.register_blueprint(dashboard_bp)
+
     
     with app.app_context():
         db.create_all()
