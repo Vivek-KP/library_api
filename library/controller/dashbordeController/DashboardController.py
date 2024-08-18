@@ -11,4 +11,4 @@ class DashboardController:
             result = DashboardService.getMembersTotal()
             return jsonify({'status':'SUCCESS','message': 'Dashboard Data','data':result})
         except Exception as e:
-            return jsonify({'status': 'FAIL', 'message': str(e)})
+            return jsonify({'status': 'FAIL', 'message': str(e)}),500

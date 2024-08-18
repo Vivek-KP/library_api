@@ -25,7 +25,7 @@ class MemberController:
         try:
             data = request.get_json()
             if not data:
-                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'})
+                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'}),404
             newMember = Member(
                 name = data['name'],
                 email = data['email']
@@ -33,7 +33,7 @@ class MemberController:
             result = MemberService.addMember(newMember)
             return jsonify({'status':'SUCCESS','message': 'New member added!','data':result})
         except Exception as e:
-            return jsonify({'status': 'FAIL', 'message': str(e)})
+            return jsonify({'status': 'FAIL', 'message': str(e)}),500
 
 
 
@@ -58,9 +58,9 @@ class MemberController:
         try:
             data = request.get_json()
             if not data or 'id' not in data:
-                return jsonify({'status':'FAIL','message':'Data not Found'})
+                return jsonify({'status':'FAIL','message':'Data not Found'}),404
             result = MemberService.updateMember(data)
             return jsonify({'status':'SUCCESS','message':'Member Updated Successfully','data':result})
         except Exception as e:
-            return jsonify({'status':'FAIL','message':str(e)})
+            return jsonify({'status':'FAIL','message':str(e)}),500
         

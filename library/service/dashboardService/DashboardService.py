@@ -10,5 +10,5 @@ class DashboardService:
         data['memberCount'] = Member.query.count()
         data['bookCount'] =  Book.query.count()
         data['issuedBookCount'] = IssuedBooks.query.count()
-        data['overDuebookCount'] = IssuedBooks.query.filter(Member.created_date < func.current_date()).count()
+        data['overDuebookCount'] = IssuedBooks.query.filter(IssuedBooks.return_date < func.current_date()).count()
         return data
