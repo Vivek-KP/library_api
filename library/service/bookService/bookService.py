@@ -15,9 +15,9 @@ class BookService :
             raise e
 
 
-    def updateBook(self,data):
+    def updateBook(data):
         try:
-            book = self.getBook(data['id'])
+            book = BookService.getBook(data['id'])
             book.title= data['title']
             book.author =  data['author']
             book.average_rating =  float(data['averageRating'])

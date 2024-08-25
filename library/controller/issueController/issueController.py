@@ -27,15 +27,17 @@ class IssueController:
     @issueBook_bp.route('/issue',methods=['GET'])
     def getIssuedBookDetails():
         try:
-            result = IssueService.getIssuedBookDetails()
+            id = request.args.get('id')
+            result = IssueService.getIssuedBookDetails(id)
             return jsonify({'status':'SUCCESS','message': 'Issued Books','data':result})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
-
+    
+    @issueBook_bp.route('/issue',methods=['DELETE'])
     def returnBook():
         try:
-            data = request.get_json()
-            result = IssueService.returnBook(data)
+            id = request.args.get('id')
+            result = IssueService.returnBook(id)
             return jsonify({'status':'SUCCESS','message': 'New member added!','data':result})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
