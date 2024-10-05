@@ -20,6 +20,8 @@ class IssueController:
             )
             result = IssueService.issueBook(issuedDetails)
             return jsonify({'status':'SUCCESS','message': 'Book Issued','data':result})
+        except ValueError as ve:
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}) , 500
         
@@ -30,6 +32,8 @@ class IssueController:
             id = request.args.get('id')
             result = IssueService.getIssuedBookDetails(id)
             return jsonify({'status':'SUCCESS','message': 'Issued Books','data':result})
+        except ValueError as ve:
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
     
@@ -39,6 +43,8 @@ class IssueController:
             id = request.args.get('id')
             result = IssueService.returnBook(id)
             return jsonify({'status':'SUCCESS','message': 'New member added!','data':result})
+        except ValueError as ve:
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
             

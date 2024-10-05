@@ -14,7 +14,7 @@ class MemberController:
             result = MemberService.getMember(id)
             return jsonify({'status':'SUCCESS','message': '','data':result})
         except ValueError as ve:
-            return jsonify({'status': 'FAIL', 'message': str(ve)}), 404
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}), 500
         
@@ -25,13 +25,15 @@ class MemberController:
         try:
             data = request.get_json()
             if not data:
-                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'}),404
+                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'})
             newMember = Member(
                 name = data['name'],
                 email = data['email']
             )
             result = MemberService.addMember(newMember)
             return jsonify({'status':'SUCCESS','message': 'New member added!','data':result})
+        except ValueError as ve:
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
 
@@ -45,7 +47,7 @@ class MemberController:
             MemberService.deleteMember(id)
             return jsonify({'status': 'SUCCESS', 'message': 'Deleted Successfully'})
         except ValueError as ve:
-            return jsonify({'status': 'FAIL', 'message': str(ve)}), 404
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
 
@@ -58,7 +60,7 @@ class MemberController:
         try:
             data = request.get_json()
             if not data or 'id' not in data:
-                return jsonify({'status':'FAIL','message':'Data not Found'}),404
+                return jsonify({'status':'FAIL','message':'Data not Found'})
             result = MemberService.updateMember(data)
             return jsonify({'status':'SUCCESS','message':'Member Updated Successfully','data':result})
         except Exception as e:

@@ -14,7 +14,7 @@ class MemberService :
             return newMember.dataReturn()
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise Exception('Something Went Wrong')
 
 
     def updateMember(data):
@@ -26,17 +26,23 @@ class MemberService :
             db.session.commit()
             return member.dataReturn()
         except Exception as e:
-            raise e
+            raise Exception('Something Went Wrong')
 
     def deleteMember(id):
         try:
             if not id:
-                raise Exception ('Member_id not found')
+                raise ValueError ('Member_id not found')
             member =  Member.query.get(id)
             if not member:
-                raise Exception ('Member not found')
+                raise ValueError ('Member not found')
+            if IssueService.checkMemberhasIssuedDetails(id):
+                raise ValueError ('Please return all the book assigned to this member')
+                
             db.session.delete(member)
             db.session.commit()
+        except ValueError as ve:
+            db.session.rollback()
+            raise ve
         except Exception as e:
             db.session.rollback()
             raise e
@@ -62,5 +68,7 @@ class MemberService :
 
                     result.append(memberData)
             return result
+        except ValueError as ve:
+            raise ve
         except Exception as e:
-            raise e
+            raise Exception('Something Went Wrong')

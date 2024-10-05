@@ -15,7 +15,7 @@ class MemberController:
             result = BookService.getBook(id)
             return jsonify({'status':'SUCCESS','message': '','data':result})
         except ValueError as ve:
-            return jsonify({'status': 'FAIL', 'message': str(ve)}), 404
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}), 500
         
@@ -26,19 +26,20 @@ class MemberController:
         try:
             data = request.get_json()
             if not data:
-                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'}),404
+                return jsonify({'status': 'FAIL', 'message': 'Invalid or missing JSON data'})
             newBook = Book(
                 title= data['title'],
                 author =  data['author'],
                 average_rating =  float(data['averageRating']),
                 isbn =  data['isbn'],
-                num_pages = int(data['numPages']),
                 stock = int(data['stock']),
                 publication_date =  datetime.strptime(data['publicationDate'], '%d-%m-%Y').date(),
                 publisher = data['publisher']
             )
             result = BookService.addBook(newBook)
             return jsonify({'status':'SUCCESS','message': 'New book added!','data':result})
+        except ValueError as ve:
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
 
@@ -52,7 +53,7 @@ class MemberController:
             BookService.deleteBook(id)
             return jsonify({'status': 'SUCCESS', 'message': 'Deleted Successfully'})
         except ValueError as ve:
-            return jsonify({'status': 'FAIL', 'message': str(ve)}), 404
+            return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
 
@@ -65,7 +66,7 @@ class MemberController:
         try:
             data = request.get_json()
             if not data or 'id' not in data:
-                return jsonify({'status':'FAIL','message':'Data not Found'}),404
+                return jsonify({'status':'FAIL','message':'Data not Found'})
             result = BookService.updateBook(data)
             return jsonify({'status':'SUCCESS','message':'Book Updated Successfully','data':result})
         except Exception as e:

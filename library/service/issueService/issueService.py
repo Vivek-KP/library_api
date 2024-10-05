@@ -1,5 +1,6 @@
 from library import db
 from library.models.issuedBooks import IssuedBooks
+from library.models.booksModel import Book
 from sqlalchemy.orm import joinedload
 from sqlalchemy import asc
 from datetime import datetime
@@ -9,14 +10,17 @@ class IssueService:
         try:
             # check fee reaches 500 
             if (IssueService.checkAssignFee(issueDetails.member_id)>= 500):
-                raise Exception('Fee is over or equals to 500')
-            else:
-                db.session.add(issueDetails)
-                db.session.commit()
-                return issueDetails.dataReturn()
+                raise ValueError('Fee is over or equals to 500')
+            IssueService.updateStock(issueDetails.book_id)
+            db.session.add(issueDetails)
+            db.session.commit()
+            return issueDetails.dataReturn()
+        except ValueError as ve:
+            db.session.rollback()
+            raise ve
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise Exception('Something Went Wrong'+str(e))
 
     def getIssuedBookDetails(id):
         try:
@@ -32,7 +36,7 @@ class IssueService:
                     result.append(issuedData)
                 return result
         except Exception as e:
-            raise e
+           raise Exception('Something Went Wrong')
 
     def dataFormater(data):
         current_date = datetime.now()
@@ -59,10 +63,12 @@ class IssueService:
                 db.session.delete(issuedBook)
                 db.session.commit()
             else:
-                raise Exception ('Return Details not Found')
+                raise ValueError ('Return Details not Found')
+        except ValueError as ve:
+            raise ve
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise Exception('Something Went Wrong')
 
 
 
@@ -78,4 +84,34 @@ class IssueService:
                     totalFee += 0
             return totalFee
         except Exception as e:
-            raise e
+            raise Exception('Something Went Wrong')
+    
+    # these to two function is to check book or memeber is present in the issued details before delete
+    def checkMemberhasIssuedDetails(memberId):
+        try:
+            member = IssuedBooks.query.filter_by(member_id = memberId).first()
+            if member:
+                return True
+            else:
+                return False
+        except Exception as e:
+            raise  Exception('Something Went Wrong')
+        
+    def checkBookhasIssuedDetails(bookId):
+        try:
+            book = IssuedBooks.query.filter_by(book_id = bookId).first()
+            if book:
+                return True
+            else:
+                return False
+        except Exception as e:
+            raise Exception('Something Went Wrong')
+        
+    def updateStock(bookId):
+        try:
+            book = Book.query.filter_by(id = bookId).first()
+            if book and book.stock>0:
+                book.stock -= 1
+                db.session.commit()
+        except Exception as e:
+            raise Exception('Something went wrong'+str(e))

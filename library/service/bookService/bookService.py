@@ -1,6 +1,7 @@
 from library.models.booksModel import Book
 from library import db
 from datetime import datetime
+from library.service.issueService.issueService import IssueService
 
 
 
@@ -12,37 +13,42 @@ class BookService :
             return newBook.dataReturn()
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise Exception('Something Went Wrong')
 
 
     def updateBook(data):
         try:
-            book = BookService.getBook(data['id'])
+            book = Book.query.get(data['id'])
             book.title= data['title']
             book.author =  data['author']
             book.average_rating =  float(data['averageRating'])
             book.isbn =  data['isbn']
-            book.num_pages = int(data['numPages'])
             book.stock = int(data['stock'])
-            book.publicationDate =   datetime.strptime(data['publicationDate'], '%d/%m/%Y').date()
+            book.publicationDate =   datetime.strptime(data['publicationDate'], '%d-%m-%Y').date()
             book.publisher = data['publisher']
             db.session.commit()
             return book.dataReturn()
         except Exception as e:
-            raise e
+            raise Exception('Something Went Wrong')
 
     def deleteBook(id):
         try:
             if not id:
-                raise Exception ('Member_id not found')
-            book = BookService.getMember(id)
+                raise ValueError ('Book_id not found')
+            book = Book.query.get(id)
             if not book:
-                raise Exception ('Book not found')
+                raise ValueError ('Book not found')
+            if IssueService.checkBookhasIssuedDetails(id):
+                raise ValueError ('Please return all this book from  assigned members')
+                
             db.session.delete(book)
             db.session.commit()
+        except ValueError as ve:
+            db.session.rollback()
+            raise ve
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise Exception('Something Went Wrong')
 
 
     def getBook(id):
@@ -63,8 +69,10 @@ class BookService :
                     result.append(bookdata)
 
             return result
+        except ValueError as ve:
+            raise ve
         except Exception as e:
-            raise e
+            raise Exception('Something Went Wrong')
         
 
 

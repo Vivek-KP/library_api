@@ -6,6 +6,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 def create_app():
     app = Flask(__name__)
+    app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db' 
 
     from library.models.booksModel import Book 
