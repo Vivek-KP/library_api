@@ -2,7 +2,7 @@ from library.models.booksModel import Book
 from library import db
 from datetime import datetime
 from library.service.issueService.issueService import IssueService
-
+import requests
 
 
 class BookService :
@@ -74,5 +74,12 @@ class BookService :
         except Exception as e:
             raise Exception('Something Went Wrong')
         
+
+    def importBook():
+        url = 'https://frappe.io/api/method/frappe-library'
+        response = requests.get(url).json()
+        print(response)
+        
+
 
 

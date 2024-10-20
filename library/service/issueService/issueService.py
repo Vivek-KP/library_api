@@ -11,7 +11,7 @@ class IssueService:
             # check fee reaches 500 
             if (IssueService.checkAssignFee(issueDetails.member_id)>= 500):
                 raise ValueError('Fee is over or equals to 500')
-            IssueService.updateStock(issueDetails.book_id)
+            IssueService.updateStock(issueDetails.book_id,'ISSUE')
             db.session.add(issueDetails)
             db.session.commit()
             return issueDetails.dataReturn()
@@ -60,6 +60,7 @@ class IssueService:
         try:
             issuedBook = IssuedBooks.query.get(id)
             if issuedBook:
+                IssueService.updateStock(issuedBook.book_id,'RETURN')
                 db.session.delete(issuedBook)
                 db.session.commit()
             else:
@@ -107,11 +108,14 @@ class IssueService:
         except Exception as e:
             raise Exception('Something Went Wrong')
         
-    def updateStock(bookId):
+    def updateStock(bookId,type):
         try:
             book = Book.query.filter_by(id = bookId).first()
-            if book and book.stock>0:
+            if book and book.stock>0 and type == 'ISSUE':
                 book.stock -= 1
+                db.session.commit()
+            elif book and type == 'RETURN':
+                book.stock += 1
                 db.session.commit()
         except Exception as e:
             raise Exception('Something went wrong'+str(e))

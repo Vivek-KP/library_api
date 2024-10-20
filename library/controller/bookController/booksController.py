@@ -71,4 +71,11 @@ class MemberController:
             return jsonify({'status':'SUCCESS','message':'Book Updated Successfully','data':result})
         except Exception as e:
             return jsonify({'status':'FAIL','message':str(e)}),500
-        
+    
+
+    # @books_bp.route('/book/import', methods=['GET'])
+    # def importBooks():
+    #     try:
+    #         BookService.importBook()
+    #     except Exception as e:
+    #          return jsonify({'status':'FAIL','message':str(e)}),500
