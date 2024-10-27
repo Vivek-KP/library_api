@@ -20,7 +20,6 @@ class MemberService :
     def updateMember(data):
         try:
             member = Member.query.get(data['id'])
-            print(member)
             member.name = data['name']
             member.email = data['email']
             member.fee = data['fee']

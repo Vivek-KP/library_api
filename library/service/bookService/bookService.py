@@ -2,7 +2,9 @@ from library.models.booksModel import Book
 from library import db
 from datetime import datetime
 from library.service.issueService.issueService import IssueService
-import requests
+import requests,math
+import json
+
 
 
 class BookService :
@@ -75,10 +77,39 @@ class BookService :
             raise Exception('Something Went Wrong')
         
 
-    def importBook():
-        url = 'https://frappe.io/api/method/frappe-library'
-        response = requests.get(url).json()
-        print(response)
+    def importBook(data):
+        try:
+            url = 'https://frappe.io/api/method/frappe-library'
+            params = {'title':data['title'],'authors':data['author'],'publisher':data['publisher'],'page':1}
+            importedBooks = 0
+            pageNumber = math.ceil(int(data['bookCount'])/20)
+            for i in range(1,pageNumber+1):
+                params['page'] = i
+                response = requests.get(url,params=params).json()
+                responseData = response['message']
+                for book in responseData:
+                    if(importedBooks== int(data['bookCount'])):
+                        break
+                    else:
+                        newBook = Book(
+                                title= book['title'],
+                                author =  book['authors'],
+                                average_rating =  float(book['average_rating']),
+                                isbn =  book['isbn'],
+                                stock = 1,
+                                publication_date =  datetime.strptime(book['publication_date'], '%m/%d/%Y').date(),
+                                publisher = book['publisher']
+                        )
+                        importedBooks+=1
+                        db.session.add(newBook)
+                        db.session.commit()
+                if(importedBooks==data['bookCount']):
+                        break
+        except ValueError as ve:
+            raise ve
+        except Exception as e:
+            raise Exception('Something Went Wrong')
+
         
 
 

@@ -73,9 +73,15 @@ class MemberController:
             return jsonify({'status':'FAIL','message':str(e)}),500
     
 
-    # @books_bp.route('/book/import', methods=['GET'])
-    # def importBooks():
-    #     try:
-    #         BookService.importBook()
-    #     except Exception as e:
-    #          return jsonify({'status':'FAIL','message':str(e)}),500
+    @books_bp.route('/book/import', methods=['POST'])
+    def importBooks():
+        try:
+            data = request.get_json()
+            print(data)
+            if not data:
+                 return jsonify({'status':'FAIL','message':'Insufficient data'})
+            else:
+                BookService.importBook(data)
+            return jsonify({'status':'SUCCESS','message': '','data':''})
+        except Exception as e:
+             return jsonify({'status':'FAIL','message':str(e)}),500
