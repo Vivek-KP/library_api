@@ -36,7 +36,7 @@ class IssueService:
                     result.append(issuedData)
                 return result
         except Exception as e:
-           raise Exception('Something Went Wrong')
+           raise Exception('Something Went Wrong' + str(e))
 
     def dataFormater(data):
         current_date = datetime.now()

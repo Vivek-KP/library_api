@@ -50,7 +50,7 @@ class BookService :
             raise ve
         except Exception as e:
             db.session.rollback()
-            raise Exception('Something Went Wrong')
+            raise Exception('Something Went Wrong'+ str(e))
 
 
     def getBook(id):
@@ -79,9 +79,17 @@ class BookService :
 
     def importBook(data):
         try:
+            print(data)
             url = 'https://frappe.io/api/method/frappe-library'
-            params = {'title':data['title'],'authors':data['author'],'publisher':data['publisher'],'page':1}
+            params = {'page':1}
+            if(data['title']):
+                params['title'] = data['title']
+            if(data['author']):
+                 params['author'] = data['author']
+            if(data['publisher']):
+                 params['publisher'] = data['publisher']
             importedBooks = 0
+            print(params)
             pageNumber = math.ceil(int(data['bookCount'])/20)
             for i in range(1,pageNumber+1):
                 params['page'] = i
@@ -108,8 +116,8 @@ class BookService :
         except ValueError as ve:
             raise ve
         except Exception as e:
-            raise Exception('Something Went Wrong')
-
+            raise Exception('Something Went Wrong'+str(e))
+    
         
 
 

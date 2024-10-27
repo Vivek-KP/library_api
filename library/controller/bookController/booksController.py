@@ -77,7 +77,6 @@ class MemberController:
     def importBooks():
         try:
             data = request.get_json()
-            print(data)
             if not data:
                  return jsonify({'status':'FAIL','message':'Insufficient data'})
             else:
@@ -85,3 +84,4 @@ class MemberController:
             return jsonify({'status':'SUCCESS','message': '','data':''})
         except Exception as e:
              return jsonify({'status':'FAIL','message':str(e)}),500
+
