@@ -10,7 +10,6 @@ import json
 class BookService :
     def addBook(newBook):
         try:
-            print(newBook)
             db.session.add(newBook)
             db.session.commit()
             return newBook.dataReturn()
@@ -21,7 +20,6 @@ class BookService :
 
     def updateBook(data):
         try:
-            print(data)
             book = Book.query.get(data['id'])
             book.title= data['title']
             book.author =  data['author']
@@ -30,7 +28,6 @@ class BookService :
             book.stock = int(data['stock'])
             book.publication_date =   datetime.strptime(data['publicationDate'], '%d-%m-%Y').date() if data['publicationDate'] else None
             book.publisher = data['publisher']
-            print( book)
             db.session.commit()
             return book.dataReturn()
         except Exception as e:
@@ -80,7 +77,6 @@ class BookService :
 
     def importBook(data):
         try:
-            print(data)
             url = 'https://frappe.io/api/method/frappe-library'
             params = {'page':1}
             if(data['title']):
@@ -90,7 +86,6 @@ class BookService :
             if(data['publisher']):
                  params['publisher'] = data['publisher']
             importedBooks = 0
-            print(params)
             pageNumber = math.ceil(int(data['bookCount'])/20)
             for i in range(1,pageNumber+1):
                 params['page'] = i

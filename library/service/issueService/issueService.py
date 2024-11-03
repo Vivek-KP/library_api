@@ -116,7 +116,7 @@ class IssueService:
 
     def checkBookAlreadyAssignedtotheMember(bookId,memberId):
         try:
-            details = IssuedBooks.query.filter(and_(IssuedBooks.book_id == bookId,IssuedBooks.member_id == memberId))
+            details = IssuedBooks.query.filter(and_(IssuedBooks.book_id == bookId,IssuedBooks.member_id == memberId)).first()
             if details:
                 return True
             else:
