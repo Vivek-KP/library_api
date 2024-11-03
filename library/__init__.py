@@ -9,9 +9,9 @@ def create_app():
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db' 
 
-    from library.models.booksModel import Book 
-    from library.models.memberModel import Member
-    from library.models.issuedBooks import IssuedBooks
+    # from library.models.booksModel import Book 
+    # from library.models.memberModel import Member
+    # from library.models.issuedBooks import IssuedBooks
 
     db.init_app(app)
     migrate.init_app(app,db)

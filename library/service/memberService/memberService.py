@@ -56,16 +56,13 @@ class MemberService :
                     raise ValueError ('Member not found')
                 else:
                     result = member.dataReturn()
-                    result['joined'] =  result['joined'].strftime("%Y-%m-%d")
                     result['fee'] = IssueService.checkAssignFee(member.id) if IssueService.checkAssignFee(member.id) < 500 else 500
             else:
                 members = Member.query.all()
                 result = []
                 for member in members:
                     memberData = member.dataReturn()
-                    memberData['joined'] =  memberData['joined'].strftime("%d-%m-%Y")
                     memberData['fee'] = IssueService.checkAssignFee(member.id) if IssueService.checkAssignFee(member.id) < 500 else 500
-
                     result.append(memberData)
             return result
         except ValueError as ve:

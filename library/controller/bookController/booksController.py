@@ -30,11 +30,11 @@ class MemberController:
             newBook = Book(
                 title= data['title'],
                 author =  data['author'],
-                average_rating =  float(data['averageRating']),
+                average_rating =  data.get('averageRating',"") ,
                 isbn =  data['isbn'],
                 stock = int(data['stock']),
-                publication_date =  datetime.strptime(data['publicationDate'], '%d-%m-%Y').date(),
-                publisher = data['publisher']
+                publication_date =  datetime.strptime(data['publicationDate'], '%d-%m-%Y').date() if data.get('publicationDate') and data['publicationDate'] else None,
+                publisher = data.get('publisher', "")
             )
             result = BookService.addBook(newBook)
             return jsonify({'status':'SUCCESS','message': 'New book added!','data':result})

@@ -2,12 +2,16 @@ from library import db
 from library.models.issuedBooks import IssuedBooks
 from library.models.booksModel import Book
 from sqlalchemy.orm import joinedload
-from sqlalchemy import asc
+from sqlalchemy import asc,and_
 from datetime import datetime
 
 class IssueService:
     def issueBook(issueDetails):
         try:
+            # check the book already assigned to the member
+            if(IssueService.checkBookAlreadyAssignedtotheMember(issueDetails.book_id,issueDetails.member_id)):
+                raise ValueError('Book already assigned to that member')
+                
             # check fee reaches 500 
             if (IssueService.checkAssignFee(issueDetails.member_id)>= 500):
                 raise ValueError('Fee is over or equals to 500')
@@ -29,7 +33,7 @@ class IssueService:
                 issuedData = IssueService.dataFormater(issuedDetails)
                 return issuedData
             else:
-                details = db.session.query(IssuedBooks).options(joinedload(IssuedBooks.book)).options(joinedload(IssuedBooks.member)).order_by(asc(IssuedBooks.return_date)).all()
+                details = IssuedBooks.query.options(joinedload(IssuedBooks.book)).options(joinedload(IssuedBooks.member)).order_by(asc(IssuedBooks.return_date)).all()
                 result=[]
                 for data in details:
                     issuedData = IssueService.dataFormater(data)
@@ -69,7 +73,7 @@ class IssueService:
             raise ve
         except Exception as e:
             db.session.rollback()
-            raise Exception('Something Went Wrong')
+            raise Exception('Something Went Wrong' + str(e))
 
 
 
@@ -108,6 +112,19 @@ class IssueService:
         except Exception as e:
             raise Exception('Something Went Wrong')
         
+        
+
+    def checkBookAlreadyAssignedtotheMember(bookId,memberId):
+        try:
+            details = IssuedBooks.query.filter(and_(IssuedBooks.book_id == bookId,IssuedBooks.member_id == memberId))
+            if details:
+                return True
+            else:
+                return False
+        except Exception as e:
+            raise Exception('Something Went Wrong' + str(e))
+
+
     def updateStock(bookId,type):
         try:
             book = Book.query.filter_by(id = bookId).first()

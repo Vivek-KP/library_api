@@ -16,6 +16,6 @@ class Member(db.Model):
         'name': self.name,
         'email': self.email,
         'fee': self.fee,
-        'joined':self.created_date
+        'joined':self.created_date.strftime("%d-%m-%Y")
 
     }

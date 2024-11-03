@@ -13,7 +13,7 @@ class IssuedBooks(db.Model):
     return_date = db.Column(db.DateTime)
     
     book = db.relationship('Book', backref=db.backref('issued_books', lazy=True))
-    member = db.relationship('Member', backref=db.backref('issued_books', lazy=True))
+    member = db.relationship('Member', backref=db.backref('issued_members', lazy=True))
 
     __table_args__ = (
          UniqueConstraint('book_id', 'member_id', name='uq_book_member'),

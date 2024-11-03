@@ -26,6 +26,9 @@ class IssueController:
             return jsonify({'status': 'FAIL', 'message': str(e)}) , 500
         
 
+        
+        
+
     @issueBook_bp.route('/issue',methods=['GET'])
     def getIssuedBookDetails():
         try:
@@ -36,6 +39,9 @@ class IssueController:
             return jsonify({'status': 'FAIL', 'message': str(ve)})
         except Exception as e:
             return jsonify({'status': 'FAIL', 'message': str(e)}),500
+        
+
+
     
     @issueBook_bp.route('/issue',methods=['DELETE'])
     def returnBook():

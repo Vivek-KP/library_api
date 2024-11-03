@@ -10,28 +10,31 @@ import json
 class BookService :
     def addBook(newBook):
         try:
+            print(newBook)
             db.session.add(newBook)
             db.session.commit()
             return newBook.dataReturn()
         except Exception as e:
             db.session.rollback()
-            raise Exception('Something Went Wrong')
+            raise Exception('Something Went Wrong' + str(e))
 
 
     def updateBook(data):
         try:
+            print(data)
             book = Book.query.get(data['id'])
             book.title= data['title']
             book.author =  data['author']
-            book.average_rating =  float(data['averageRating'])
+            book.average_rating =  data['averageRating']
             book.isbn =  data['isbn']
             book.stock = int(data['stock'])
-            book.publicationDate =   datetime.strptime(data['publicationDate'], '%d-%m-%Y').date()
+            book.publication_date =   datetime.strptime(data['publicationDate'], '%d-%m-%Y').date() if data['publicationDate'] else None
             book.publisher = data['publisher']
+            print( book)
             db.session.commit()
             return book.dataReturn()
         except Exception as e:
-            raise Exception('Something Went Wrong')
+            raise Exception('Something Went Wrong' + str(e))
 
     def deleteBook(id):
         try:
@@ -61,20 +64,18 @@ class BookService :
                     raise ValueError ('Book not found')
                 else:
                     result = book.dataReturn()
-                    result['publicationDate'] =  result['publicationDate'].strftime("%Y-%m-%d")
             else:
                 books = Book.query.all()
                 result = []
                 for book in books:
                     bookdata = book.dataReturn()
-                    bookdata['publicationDate'] =  bookdata['publicationDate'].strftime("%d-%m-%Y")
                     result.append(bookdata)
 
             return result
         except ValueError as ve:
             raise ve
         except Exception as e:
-            raise Exception('Something Went Wrong')
+            raise Exception('Something Went Wrong' + str(e))
         
 
     def importBook(data):
